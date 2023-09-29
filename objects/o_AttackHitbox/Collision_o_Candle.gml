@@ -1,0 +1,5 @@
+/// @description
+
+other.hit();
+
+
