@@ -1,5 +1,5 @@
 /// @description
-isAlive = true
+
 moveTarget = {x:o_SnakeWitch.x, y:o_SnakeWitch.y-40};
 isMoving = false;
 maxSpeed = 1.5;

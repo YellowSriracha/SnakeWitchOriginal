@@ -1,4 +1,4 @@
 
 
 
-room_goto(rm_Moon);
+room_goto(rm_Long);

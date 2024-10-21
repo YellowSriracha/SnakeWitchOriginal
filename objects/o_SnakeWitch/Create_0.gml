@@ -27,6 +27,7 @@ AIRRESISTV =.8;
 //state
 state=PSTATE.GROUND;
 isAttacking = false;
+isCrouching = false;
 
 //movement
 xVelocity=0; yVelocity =0;
@@ -57,10 +58,16 @@ jkey = 0;
 
 function assignPlayerSprite(){
 	///Assign Sprites=============================================================
-	//return 0;
+	if state != PSTATE.CROUCH mask_index=sp_bay_collision_box else mask_index=sp_bay_collision_box_low;
 	switch(state){
 		case PSTATE.CROUCH:
-			sprite_index = sp_bay_crouch;
+			if (abs(xVelocity)<0.5){
+				
+				sprite_index = sp_bay_crouch;
+			} else {
+				sprite_index =sp_bay_slide;
+			}
+			
 			break;
 		case PSTATE.ATTACKING:
 			sprite_index = sp_bay_attack;
@@ -100,15 +107,17 @@ function checkcol (_xcheck, _ycheck){
 //check if the player is on the ground and adjust velocity/state accordingly
 //returns if player is on the ground
 function ground_collision(){
-	return (checkcol(bbox_right,bbox_bottom)+ checkcol(bbox_left, bbox_bottom)!=0);
+	return (checkcol(bbox_right-1,bbox_bottom)+ checkcol(bbox_left+1, bbox_bottom)!=0);
 }
 	
 function top_collision(){
-	if (checkcol(bbox_right-1, bbox_top+yVelocity)+checkcol(bbox_left+1, bbox_top+yVelocity)!=0){ 
-		while (checkcol(bbox_right-1,bbox_top-1)+ checkcol(bbox_left+1, bbox_top-1)==0){
-			y=floor(y-1);
+	if(yVelocity<0){
+		if (checkcol(bbox_right-1, bbox_top+yVelocity)+checkcol(bbox_left+1, bbox_top+yVelocity)!=0){ 
+			while (checkcol(bbox_right-1,bbox_top-1)+ checkcol(bbox_left+1, bbox_top-1)==0){
+				y=floor(y-1);
+			}
+			return 1;
 		}
-		return 1;
 	}
 	return 0;
 }
@@ -143,5 +152,18 @@ function left_collision(){
 	return 0;
 }
 
-
+function hit(_damage,_otherx, _othery){
+	audio_stop_sound(sfx_whip);
+	audio_stop_sound(sfx_stickwoosh);
+	if(!isInvulnerable){
+		global.hp-=_damage;
+		isInvulnerable=true;
+		hitstunFrames = hitStunMaxFrames;
+		var _xdif = x- _otherx;
+		xVelocity = sign(_xdif)*4;
+		yVelocity = -2;
+		state = PSTATE.HITSTUN;
+		audio_play_sound(sfx_got_hit,1,0)
+	}
+}
 

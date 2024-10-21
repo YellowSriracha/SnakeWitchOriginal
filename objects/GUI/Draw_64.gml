@@ -20,3 +20,5 @@ draw_text(2*width-30,50,"Wallet:"+string(global.wallet));
 draw_set_halign(fa_left);
 draw_set_valign(fa_top);
 draw_text(20,80,"state"+string(o_SnakeWitch.state));
+draw_text(20,100,"direction"+string(o_SnakeWitch.dir));
+draw_text(20,120,"directionfacing"+string(o_SnakeWitch.dirFacing));
